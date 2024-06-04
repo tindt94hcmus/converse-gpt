@@ -1,6 +1,7 @@
-import { Prata, Courgette } from "next/font/google";
-import { Label } from "./ui/label";
-import { Play } from "lucide-react";
+import {Prata, Courgette} from "next/font/google";
+import {Label} from "./ui/label";
+import {Play} from "lucide-react";
+import {clsx} from "clsx";
 
 const spaceMono = Courgette({
   subsets: ["latin"],
@@ -14,7 +15,7 @@ const prata = Prata({
   weight: "400",
 });
 
-function Word({ word, setKeyword, searchQuery }: any) {
+function Word({word, setKeyword, searchQuery}: any) {
   return (
     <section className=" flex flex-col my-11">
       <div className="flex place-content-between items-center">
@@ -36,11 +37,11 @@ function Word({ word, setKeyword, searchQuery }: any) {
             speechSynthesis.speak(utterance);
           }}
         >
-          <Play />
+          <Play/>
           {/* <SvgIcon icon={"Play"} className="theme-text-on-primary" size={10} /> */}
         </button>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col my-4 space-y-2">
         <Meanings
           meanings={word.meanings}
           setQuery={(query: string) => {
@@ -50,9 +51,9 @@ function Word({ word, setKeyword, searchQuery }: any) {
         />
       </div>
       <div>
-        <div className="flex flex-col my-4 border-t py-2">
-          <Label>Origin </Label>
-          <a href={word.sourceUrls}>
+        <div className="flex flex-col border-t py-2">
+          <Label className="mt-4 mb-2">Origin </Label>
+          <a href={word.sourceUrls} className="mt-2 break-words text-gray-600">
             <Label className="underline">{word.sourceUrls}</Label>
           </a>
         </div>
@@ -61,19 +62,22 @@ function Word({ word, setKeyword, searchQuery }: any) {
   );
 }
 
-function Meanings({ meanings, setQuery = () => {} }: any) {
+function Meanings({
+                    meanings, setQuery = () => {
+  }
+                  }: any) {
   return (
     <>
       {meanings.map((meaning: any, index: number) => {
-        const { partOfSpeech, synonyms, antonyms } = meaning;
+        const {partOfSpeech, synonyms, antonyms} = meaning;
         return (
           <>
             <div key={index}>
               <div className="flex gap-4 items-center my-4">
-                <Label className={spaceMono.className}>{partOfSpeech}</Label>
-                <div className="flex-1 border-b h-1 " />
+                <Label className={clsx(spaceMono.className, "text-[18px]")}>{partOfSpeech}</Label>
+                <div className="flex-1 border-b h-1 "/>
               </div>
-              <Definition definitions={meaning.definitions} />
+              <Definition definitions={meaning.definitions}/>
               <div className="flex flex-col gap-2 mt-4">
                 <Nonyms
                   nonyms={synonyms}
@@ -94,34 +98,36 @@ function Meanings({ meanings, setQuery = () => {} }: any) {
   );
 }
 
-function Definition({ definitions }: any) {
+function Definition({definitions}: any) {
   return (
     <div className="flex flex-col gap-2">
-      <Label>Meaning </Label>
+      <Label className="text-gray-500 my-4">Meaning </Label>
       <div className="flex flex-col gap-1">
-        {definitions.map((item: any, index: number) => (
-          <ul
-            key={index}
-            className="flex flex-col  list-disc list-outside pl-4"
-          >
+        <ul
+          className="flex flex-col list-disc list-outside pl-4 space-y-2"
+        >
+          {definitions.map((item: any, index: number) => (
             <li key={index}>
-              <Label>{item.definition}</Label>
+              <Label className="font-medium">{item.definition}</Label>
 
               {item.example && (
-                <div className="ml-4">
-                  <Label>Example: </Label>
-                  <Label className="italic">{item.example}</Label>
+                <div className="ml-0">
+                  {/*<Label>Example: </Label>*/}
+                  <Label className="italic text-gray-600">{item.example}</Label>
                 </div>
               )}
             </li>
-          </ul>
-        ))}
+          ))}
+        </ul>
       </div>
     </div>
   );
 }
 
-function Nonyms({ nonyms, label, setQuery = (e: any) => {} }: any) {
+function Nonyms({
+                  nonyms, label, setQuery = (e: any) => {
+  }
+                }: any) {
   return (
     nonyms &&
     nonyms.length > 0 && (
