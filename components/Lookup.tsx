@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CardContent } from "./ui/card";
 import Word from "./Word";
 import { Languages } from "lucide-react";
+import { NoDefinition } from "./NoDefinition";
 
 function waitMs(ms: number) {
   return new Promise((resolve) => {
@@ -53,6 +54,7 @@ function Lookup({ open }: LookupProps) {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState([]);
+  const [error, setError] = useState<any>(undefined);
   const [query, setQuery] = useState(getSelectedText());
 
   const lookup = async (text: string) => {
@@ -72,7 +74,13 @@ function Lookup({ open }: LookupProps) {
         await waitMs(250);
 
         if (json) {
-          setResult(json);
+          if (json.title === "No Definitions Found") {
+            setError(json);
+            setResult([]);
+          } else {
+            setError(undefined);
+            setResult(json);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -110,6 +118,7 @@ function Lookup({ open }: LookupProps) {
   return (
     <CardContent className="min-w-[350px] max-w-md max-h-[500px] overflow-y-auto">
       {loading && <Loading />}
+      {error && <NoDefinition word={query} result={error} />}
       {!loading && result[0] && (
         <Word
           word={result[0]}
