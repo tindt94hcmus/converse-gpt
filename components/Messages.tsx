@@ -144,6 +144,7 @@ function Messages({ messages, onEdit }: Props) {
               ref={refs.setFloating}
               style={{
                 position: strategy,
+                zIndex: 1000,
                 top: x ?? 0,
                 left: y ?? 0,
                 ...floatingStyles,
@@ -155,6 +156,7 @@ function Messages({ messages, onEdit }: Props) {
                 ref={arrowRef}
                 style={{
                   position: "absolute",
+                  zIndex: -1,
                   width: "10px",
                   height: "10px",
                   background: "inherit",
