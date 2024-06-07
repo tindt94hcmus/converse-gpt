@@ -1,6 +1,7 @@
 "use server";
 import { conversePrompt } from "@/constants/prompt";
 import { ENDPOINTS } from "@/constants/endpoints";
+import { getCompletions } from "@/api/getCompletions";
 
 async function transcript(prevState: any, formData: FormData) {
   "use server";
@@ -51,36 +52,7 @@ async function transcript(prevState: any, formData: FormData) {
 
   console.log(`Transcription: ${text}`);
 
-  const messages: any[] = [
-    {
-      role: "system",
-      content: conversePrompt,
-    },
-    { role: "user", content: text },
-  ];
-
-  console.log(`Messages: ${messages.map((m) => m.content).join("\n")}`);
-
-  const data = {
-    model: "gpt-3.5-turbo",
-    messages,
-    max_tokens: 128,
-  }
-
-  const completionsRes = await fetch(ENDPOINTS.completions, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data),
-  });
-
-  const completions = await completionsRes.json();
-
-  console.log("chatbot: ", completions.choices[0].message?.content);
-
-  const response = completions.choices[0].message?.content;
+  const response = await getCompletions(text);
 
   return {
     sender: text,

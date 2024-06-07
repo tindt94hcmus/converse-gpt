@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import Recorder from "@/components/Recorder";
 import VoiceSynthesizer from "@/components/VoiceSynthesizer";
 import Messages from "@/components/Messages";
-import { SettingsIcon } from "lucide-react";
 import Image from "next/image";
 
 const initialState = {
@@ -27,10 +26,38 @@ export default function Home() {
   const submitButtonRef = useRef<HTMLButtonElement | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
 
+  const handleEdit = async (id: string, message: string) => {
+    const index = messages.findIndex((message) => message.id === id);
+    const newId = Math.random().toString(36);
+    const res = await fetch("/api/completion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: message,
+      }),
+    });
+
+    const resJson = await res.json();
+    const text = resJson?.text;
+
+    if (text && typeof text === "string") {
+      const newMsg = {
+        id: newId,
+        sender: message,
+        response: text,
+      };
+      setMessages((messages) => [newMsg, ...messages.slice(index + 1)]);
+    } else {
+      return;
+    }
+  };
+
   // Responsible for updating the messages when the Server Action completes
   useEffect(() => {
     if (!state) return;
-    
+
     if (state.response && state.sender) {
       setMessages((messages) => [
         {
@@ -72,8 +99,7 @@ export default function Home() {
     <main className="bg-black h-screen overflow-y-scroll">
       <header className="flex fixed top-0 justify-between text-white w-full p-5">
         <Image
-          src="https://i.imgur.com/MCHWJZS.png
-          "
+          src="https://i.imgur.com/MCHWJZS.png"
           alt="Logo"
           width={50}
           height={50}
@@ -82,7 +108,7 @@ export default function Home() {
 
       <form action={formAction} className="flex flex-col bg-black">
         <div className="flex-1 bg-gradient-to-b from-purple-500 to-black">
-          <Messages messages={messages} />
+          <Messages messages={messages} onEdit={handleEdit} />
         </div>
 
         <input type="file" name="file" ref={fileRef} hidden />
@@ -91,7 +117,7 @@ export default function Home() {
         <div className="fixed bottom-0 w-full overflow-hidden bg-black rounded-t-3xl">
           <Recorder uploadAudio={uploadAudio} />
           <div className="">
-            <VoiceSynthesizer state={state} />
+            <VoiceSynthesizer state={messages[0]} />
           </div>
         </div>
       </form>

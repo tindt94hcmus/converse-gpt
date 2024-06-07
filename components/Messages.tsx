@@ -17,14 +17,20 @@ import { ChevronDownCircle } from "lucide-react";
 import Lookup from "./Lookup";
 import { Message } from "@/app/page";
 import SubmitButton from "./SubmitButton";
+import { Sender } from "./Sender";
 
 interface Props {
   messages: Message[];
+  onEdit: (id: string, message: string) => void;
 }
 
-function Messages({ messages }: Props) {
+function Messages({ messages, onEdit }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const arrowRef = useRef(null);
+
+  const handleSubmitMessage = (id: string, message: string) => {
+    onEdit(id, message);
+  };
 
   const { refs, x, y, strategy, floatingStyles, context, middlewareData } =
     useFloating({
@@ -125,11 +131,11 @@ function Messages({ messages }: Props) {
                 </div>
 
                 {/* sender */}
-                <div className="pl-48">
-                  <p className="message text-left ml-auto rounded-br-none">
-                    {message.sender}
-                  </p>
-                </div>
+                <Sender
+                  id={message.id}
+                  message={message.sender}
+                  onSubmit={handleSubmitMessage}
+                />
               </div>
             ))}
           </div>
