@@ -98,12 +98,9 @@ export default function Home() {
   return (
     <main className="bg-black h-screen overflow-y-scroll">
       <header className="flex fixed top-0 justify-between text-white w-full p-5">
-        <Image
-          src="https://i.imgur.com/MCHWJZS.png"
-          alt="Logo"
-          width={50}
-          height={50}
-        />
+        <div className="rounded-full overflow-hidden">
+          <Image src="/logo.webp" alt="Logo" width={64} height={64} />
+        </div>
       </header>
 
       <form action={formAction} className="flex flex-col bg-black">
