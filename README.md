@@ -1,4 +1,10 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Converse GPT
+
+AI-Powered English Speaking Practice.
+
+This project explores the use of Artificial Intelligence to create a tool for improving English speaking skills.
+
+Developed for the Software Design course at HCMUS.
 
 ## Getting Started
 
